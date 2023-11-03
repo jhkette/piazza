@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Comment = require("./Comment");
 const User = require("./User");
+const Vote= require("./Vote");
 
 const postSchema = mongoose.Schema({
   text: {
@@ -31,6 +32,13 @@ const postSchema = mongoose.Schema({
   },
   postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   votes: [{ type: Schema.Types.ObjectId, ref: "Vote" }],
+
+
 });
 
+// postSchema.methods.countVotes = () => {
+//   return this.votes?.reduce((prev, curr) => prev + (curr.value || 0), 0);
+// } 
+
 module.exports = mongoose.model("Post", postSchema);
+

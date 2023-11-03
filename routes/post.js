@@ -30,6 +30,7 @@ router.get("/:postId", auth, async (req, res) => {
     //https://mongoosejs.com/docs/populate.html
     const post = await Post.findById(req.params.postId)
       .populate({path: "postComments"})
+      .populate({path: "votes"})
     const foundUser = await User.findById(post.userId);
     res.send({post, foundUser});
   } catch (err) {
@@ -38,7 +39,7 @@ router.get("/:postId", auth, async (req, res) => {
 });
 
 router.post("/", auth, async (req, res) => {
-  const topics =["politics", "health", "tech", "sports"]
+
   const postData = new Post({
     text: req.body.text,
     userId: req.user._id,
@@ -62,6 +63,7 @@ router.post("/:postId/vote", auth, async (req, res) => {
     const post = await Post.findById(req.params.postId)
     .populate({path: "votes"})
     // console.log(post.votes[0].userId, req.user._id)
+    console.log(post)
 
      const alreadyVoted = post.votes.filter(p => p.userId.toString() === req.user._id);
     if(alreadyVoted){
