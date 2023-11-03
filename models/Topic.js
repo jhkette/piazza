@@ -22,7 +22,7 @@ const topicSchema = mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('topics', topicSchema)
+module.exports = mongoose.model('Topic', topicSchema)
 // cart: {
 //     items: [
 //       {

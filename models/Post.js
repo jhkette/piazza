@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Comment = require('./Comment')
+const Comment = require("./Comment");
+const User = require("./User");
 
 const postSchema = mongoose.Schema({
   text: {
@@ -23,14 +24,13 @@ const postSchema = mongoose.Schema({
       max: 25,
     },
   ],
-
   createdAt: {
     type: Date,
     immutable: true,
     default: () => Date.now(),
   },
-  comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+  postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   votes: [{ type: Schema.Types.ObjectId, ref: "Vote" }],
 });
 
-module.exports = mongoose.model("posts", postSchema);
+module.exports = mongoose.model("Post", postSchema);

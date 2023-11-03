@@ -27,27 +27,15 @@ router.get("/topic/:topic", auth, async (req, res) => {
 router.get("/:postId", auth, async (req, res) => {
   try {
     //https://mongoosejs.com/docs/populate.html
-    const post = await Post.findById(req.params.postId);
-    //   .populate({
-    //     path: 'comments',
+    const post = await Post.findById(req.params.postId)
+      .populate({path: "postComments"})
+      // .populate({path: "postComments"})
+      
+    
+   
 
-    //   })
-    //   .then(post => {
-    //     console.log(post)
-    //     return res.send(post);
-    //  });
-
-    //  console.log(post)
-    //https://stackoverflow.com/questions/37576685/using-async-await-with-a-foreach-loop
-    const allcomments = await Promise.all(
-      post.comments.map(async (comment) => {
-        const foundComment = await Comment.findById(comment._id).exec();
-        return foundComment;
-      })
-    );
-
-    // const foundUser = await User.findById(post.userId);
-    res.send({post, allcomments});
+    const foundUser = await User.findById(post.userId);
+    res.send({post, foundUser});
   } catch (err) {
     return res.status(400).send({ message: err });
   }

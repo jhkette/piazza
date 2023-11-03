@@ -17,4 +17,4 @@ const voteSchema = mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('votes', voteSchema)
+module.exports = mongoose.model('Vote', voteSchema)
