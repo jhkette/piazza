@@ -28,9 +28,6 @@ router.post("/:postId", auth, async (req, res) => {
     // add to relevant topics
     const post = await Post.findById(req.params.postId).exec();
     await post.updateOne({ $push: { postComments: commentToSave._id} })
-   
-   
-
     res.send(commentToSave);
   } catch (err) {
     console.log(err)

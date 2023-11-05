@@ -2,14 +2,21 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Comment = require("./Comment");
 const User = require("./User");
-const Vote= require("./Vote");
+const Like = require("./Like")
+const DisLike = require("./Dislike")
 
 const postSchema = mongoose.Schema({
-  text: {
+  title: {
     type: String,
     require: true,
     min: 3,
     max: 3000,
+  },
+  message: {
+    type: String,
+    require: true,
+    min: 3,
+    max: 4000,
   },
 
   userId: {
@@ -31,14 +38,17 @@ const postSchema = mongoose.Schema({
     default: () => Date.now(),
   },
   postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
-  votes: [{ type: Schema.Types.ObjectId, ref: "Vote" }],
-
-
+  likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
+  dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }]
 });
 
-// postSchema.methods.countVotes = () => {
-//   return this.votes?.reduce((prev, curr) => prev + (curr.value || 0), 0);
-// } 
+// postSchema.virtual.countVotes = () => {
+//   this.populate({
+
+//   })
+//   // return this.votes?.reduce((prev, curr) => prev + (curr.value || 0), 0);
+// }
 
 module.exports = mongoose.model("Post", postSchema);
 
+// https://mongoosejs.com/docs/api/schemadateoptions.html#SchemaDateOptions.prototype.expires

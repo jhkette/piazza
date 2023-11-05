@@ -35,3 +35,7 @@ module.exports = mongoose.model('Topic', topicSchema)
 //       }
 //     ]
 //   }
+
+
+// https://www.testim.io/blog/supertest-how-to-test-apis-like-a-pro/
+// how to use supertest

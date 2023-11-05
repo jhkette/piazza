@@ -5,7 +5,7 @@ const dotenv = require('dotenv').config()
 
 const authPiazza = require('./routes/auth')
 const postPiazza = require('./routes/post')
-const topicsPiazza = require('./routes/topic')
+
 const commentsPiazza = require('./routes/comment')
 
 const app = express()
@@ -20,7 +20,7 @@ app.use(bodyParser.json())
 
 app.use('/piazza/user',authPiazza)
 app.use('/piazza/posts', postPiazza)
-app.use('/piazza/topics', topicsPiazza)
+
 app.use('/piazza/comments', commentsPiazza)
 
 app.get('/', (req, res) => {

@@ -4,7 +4,9 @@ const router = express.Router();
 const auth = require("../validations/verifyToken");
 const Comment = require("../models/Comment");
 const User = require("../models/User");
-const Vote = require("../models/Vote");
+
+const Like = require("../models/Like");
+const DisLike = require("../models/Dislike");
 
 router.get("/", auth, async (req, res) => {
   try {
@@ -15,33 +17,29 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/topic/:topic", auth, async (req, res) => {
-  try {
-    const topic = req.params.topic;
-    const posts = await Post.find({ topic: topic });
-    return res.send(posts);
-  } catch (err) {
-    return res.status(400).send({ message: err });
-  }
-});
 
 router.get("/:postId", auth, async (req, res) => {
   try {
     //https://mongoosejs.com/docs/populate.html
     const post = await Post.findById(req.params.postId)
-      .populate({path: "postComments"})
-      .populate({path: "votes"})
-    const foundUser = await User.findById(post.userId);
-    res.send({post, foundUser});
+
+      .populate({ path: "postComments" })
+      .populate({ path: "likes" })
+      .populate({ path: "dislikes" })
+      .populate("userId")
+
+    const { likes, dislikes, userId } = post;
+    const totalVotes = likes.length - dislikes.length
+    res.send({ post, votes: totalVotes, username:userId.username });
   } catch (err) {
     return res.status(400).send({ message: err });
   }
 });
 
 router.post("/", auth, async (req, res) => {
-
   const postData = new Post({
-    text: req.body.text,
+    title: req.body.title,
+    message: req.body.message,
     userId: req.user._id,
     topic: req.body.topic,
   });
@@ -58,29 +56,68 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-router.post("/:postId/vote", auth, async (req, res) => {
+router.post("/:postId/like", auth, async (req, res) => {
   try {
-    const post = await Post.findById(req.params.postId)
-    .populate({path: "votes"})
+    const post = await Post.findById(req.params.postId).populate({
+      path: "likes",
+    });
     // console.log(post.votes[0].userId, req.user._id)
-    console.log(post)
+    console.log(post);
 
-     const alreadyVoted = post.votes.filter(p => p.userId.toString() === req.user._id);
-    if(alreadyVoted){
-      return res.send({message: "You have already voted"})
+    const alreadyLiked = post.likes.filter(
+      (p) => p.userId.toString() === req.user._id
+    );
+    console.log(alreadyLiked)
+    if (alreadyLiked.length >= 1) {
+      return res.send({ message: "You have already like this Post" });
     }
-    const voteData = new Vote({
-      value: req.body.value,
+    const likeData = new Like({
       userId: req.user._id,
       postId: req.params.postId,
     });
-    const voteToSave = await voteData.save();
-    const amendedPost = await post.updateOne({ $push: { votes: voteToSave._id} })
+    // maybe add .save()
+    const likeToSave = await likeData.save();
+    const amendedPost = await post.updateOne({
+      $push: { likes: likeToSave._id },
+    })
     // add to relevant topics
     // const topic = await Topic.findById(req.body.topicId).exec();
     // await topic.updateOne({ $push: { posts: postToSave._id} })
 
-    res.send({post, voteToSave});
+    res.send({ post, likeToSave });
+  } catch (err) {
+    return res.send(err);
+  }
+});
+
+router.post("/:postId/dislike", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId)
+    .populate({
+      path: "dislikes",
+    });
+   
+
+    const alreadydisLiked = post.dislikes.filter(
+      (p) => p.userId.toString() === req.user._id
+    );
+    if (alreadydisLiked.length > 0) {
+      return res.send({ message: "You have already disliked this Post" });
+    }
+    const dislikeData = new DisLike({
+      userId: req.user._id,
+      postId: req.params.postId,
+    });
+    // maybe add .save()
+    const dislikeToSave = await dislikeData.save();
+    const amendedPost = await post.updateOne({
+      $push: { dislikes: dislikeToSave._id },
+    })
+    // add to relevant topics
+    // const topic = await Topic.findById(req.body.topicId).exec();
+    // await topic.updateOne({ $push: { posts: postToSave._id} })
+
+    res.send({ post, dislikeToSave });
   } catch (err) {
     return res.send(err);
   }
