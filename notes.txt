@@ -1,0 +1,9 @@
+var currentTime= moment();    // e.g. 11:00 pm
+var startTime = moment('06:30 pm', "HH:mm a");
+var endTime = moment('03:30 am', "HH:mm a");
+
+amIBetween = currentTime.isBetween(startTime , endTime);
+console.log(amIBetween);   //  returns false.  if date ignored I expect TRUE
+
+
+bring back topic route on github

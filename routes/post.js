@@ -2,8 +2,7 @@ const express = require("express");
 const Post = require("../models/Post");
 const router = express.Router();
 const auth = require("../validations/verifyToken");
-const Comment = require("../models/Comment");
-const User = require("../models/User");
+
 
 const Like = require("../models/Like");
 const DisLike = require("../models/Dislike");
@@ -11,6 +10,16 @@ const DisLike = require("../models/Dislike");
 router.get("/", auth, async (req, res) => {
   try {
     const posts = await Post.find();
+    return res.send(posts);
+  } catch (err) {
+    return res.status(400).send({ message: err });
+  }
+});
+
+router.get("/topic/:topic", auth, async (req, res) => {
+  try {
+    const topic = req.params.topic;
+    const posts = await Post.find({ topic: topic });
     return res.send(posts);
   } catch (err) {
     return res.status(400).send({ message: err });
@@ -96,8 +105,6 @@ router.post("/:postId/dislike", auth, async (req, res) => {
     .populate({
       path: "dislikes",
     });
-   
-
     const alreadydisLiked = post.dislikes.filter(
       (p) => p.userId.toString() === req.user._id
     );
@@ -108,15 +115,10 @@ router.post("/:postId/dislike", auth, async (req, res) => {
       userId: req.user._id,
       postId: req.params.postId,
     });
-    // maybe add .save()
     const dislikeToSave = await dislikeData.save();
     const amendedPost = await post.updateOne({
       $push: { dislikes: dislikeToSave._id },
     })
-    // add to relevant topics
-    // const topic = await Topic.findById(req.body.topicId).exec();
-    // await topic.updateOne({ $push: { posts: postToSave._id} })
-
     res.send({ post, dislikeToSave });
   } catch (err) {
     return res.send(err);

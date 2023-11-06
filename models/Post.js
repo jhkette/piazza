@@ -1,9 +1,6 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 const Schema = mongoose.Schema;
-const Comment = require("./Comment");
-const User = require("./User");
-const Like = require("./Like")
-const DisLike = require("./Dislike")
 
 const postSchema = mongoose.Schema({
   title: {
@@ -37,6 +34,12 @@ const postSchema = mongoose.Schema({
     immutable: true,
     default: () => Date.now(),
   },
+  expired:{
+    type: Date,
+    immutable: true,
+    default: ()=> moment(Date.now()).add(5, 'm').toDate()
+  },
+  
   postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }]

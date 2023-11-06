@@ -25,8 +25,6 @@ const commentSchema = mongoose.Schema({
         ref: 'Post',
         required: true
       }
-     
-
 })
 
 module.exports = mongoose.model('Comment', commentSchema)
