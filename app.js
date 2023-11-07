@@ -5,6 +5,8 @@ const dotenv = require('dotenv').config()
 
 const authPiazza = require('./routes/auth')
 const postPiazza = require('./routes/post')
+const votesPiazza = require('./routes/vote')
+
 
 const commentsPiazza = require('./routes/comment')
 
@@ -17,7 +19,7 @@ mongoose.connect(process.env.DB_CONNECTOR,  {useNewUrlParser: true, useUnifiedTo
 .catch((err) => { console.error(err); });
 
 app.use(bodyParser.json())
-
+app.use('/piazza/vote',votesPiazza)
 app.use('/piazza/user',authPiazza)
 app.use('/piazza/posts', postPiazza)
 

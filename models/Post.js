@@ -25,6 +25,7 @@ const postSchema = mongoose.Schema({
     {
       type: String,
       enum: ["sports", "tech", "politics", "health"],
+      immutable: true,
       min: 3,
       max: 25,
     },
@@ -34,23 +35,24 @@ const postSchema = mongoose.Schema({
     immutable: true,
     default: () => Date.now(),
   },
-  expired:{
+  expired: {
     type: Date,
     immutable: true,
-    default: ()=> moment(Date.now()).add(5, 'm').toDate()
+    default: () => moment(Date.now()).add(5, "m").toDate(),
   },
-  
+
   postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
-  dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }]
+  dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }],
 });
 
-// postSchema.virtual.countVotes = () => {
-//   this.populate({
-
-//   })
-//   // return this.votes?.reduce((prev, curr) => prev + (curr.value || 0), 0);
-// }
+postSchema.virtual("votetotal").get(function () {
+  return this.likes.length - this.dislikes.length;
+});
+postSchema.virtual("readabledate").get(function () {
+  const time = moment(this.createdAt);
+  return time.format("MMM D YYYY h:mm A");
+});
 
 module.exports = mongoose.model("Post", postSchema);
 
