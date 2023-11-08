@@ -16,6 +16,10 @@ router.get("/", auth, async (req, res) => {
 });
 
 router.post("/:postId", auth, async (req, res) => {
+  const post = await Post.findById(req.params.postId);
+  if(post.isexpired){
+    return res.json({msg: "This post has expired"})
+  }
   const commentData = new Comment({
     text: req.body.text,
     userId: req.user._id,
@@ -26,11 +30,11 @@ router.post("/:postId", auth, async (req, res) => {
   try {
     const commentToSave = await commentData.save();
     // add to relevant topics
-    const post = await Post.findById(req.params.postId).exec();
+    
     await post.updateOne({ $push: { postComments: commentToSave._id} })
     res.send(commentToSave);
   } catch (err) {
-    console.log(err)
+    return res.status(400).send({ message: err });
   }
 });
 

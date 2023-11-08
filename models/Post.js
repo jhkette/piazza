@@ -40,6 +40,7 @@ const postSchema = mongoose.Schema({
     immutable: true,
     default: () => moment(Date.now()).add(5, "m").toDate(),
   },
+ 
 
   postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
@@ -53,6 +54,27 @@ postSchema.virtual("readabledate").get(function () {
   const time = moment(this.createdAt);
   return time.format("MMM D YYYY h:mm A");
 });
+
+
+postSchema.virtual("isexpired").get(function () {
+  const now = Date.now()
+  if (now > this.expired){
+      return true;
+  }else{
+    return false;
+  }
+})
+
+
+// postSchema.virtual("readabledate").get(function () {
+//   const postCreatedTime = moment(this.createdAt);
+//   const present = moment(Date.now())
+//   if 
+  
+// });
+// https://mongoosejs.com/docs/tutorials/getters-setters.html
+
+
 
 module.exports = mongoose.model("Post", postSchema);
 

@@ -30,7 +30,11 @@ router.get("/:postId", auth, async (req, res) => {
       .populate({ path: "postComments" })
       .populate({ path: "likes" })
       .populate({ path: "dislikes" })
+      // I only want to show the user name not the whole object
+      // so i have added a second parameter
       .populate("userId", "username")
+
+      console.log(post.isexpired)
 
     // console.log(foundUser)
     // const totalVotes = likes.length - dislikes.length;

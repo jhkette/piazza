@@ -12,7 +12,9 @@ router.post("/:postId/like", auth, async (req, res) => {
         path: "likes",
       });
       // console.log(post.votes[0].userId, req.user._id)
-      console.log(post);
+      if(post.isexpired){
+        return res.json({message: "This post has expired"})
+      }
   
       const alreadyLiked = post.likes.filter(
         (p) => p.userId.toString() === req.user._id
@@ -45,6 +47,9 @@ router.post("/:postId/like", auth, async (req, res) => {
       const post = await Post.findById(req.params.postId).populate({
         path: "dislikes",
       });
+      if(post.isexpired){
+        return res.json({message: "This post has expired"})
+      }
       const alreadydisLiked = post.dislikes.filter(
         (p) => p.userId.toString() === req.user._id
       );
