@@ -9,8 +9,8 @@ function auth (req,res,next){
     try{
         const verified = jsonwebtoken.verify(token,process.env.TOKEN_SECRET)
         req.user = verified;
-        console.log(req.user)
-        next()
+
+        next() // call next as there is no return
     }catch(err){
         return res.status(401).send({message: 'Invalid token'})
     }

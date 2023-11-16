@@ -1,8 +1,6 @@
 const express = require("express");
-
 const router = express.Router();
 const bcryptjs = require("bcryptjs");
-
 const User = require("../models/User");
 const {
   registerValidation,
@@ -10,56 +8,68 @@ const {
 } = require("../validations/validation");
 const jsonwebtoken = require("jsonwebtoken");
 
-/* Much of the coding for these route are taken and adapted from
- */
+/* Much of the coding for the register and logins routes are adapted from
+ lab sessions */
 
+/**
+ * @api {auth}/register - POST
+ * register a user
+ * (much of this register function is from lab lectures)
+ * @return user object as JSON
+**/
+  
 router.post("/register", async (req, res) => {
-  const { error } = registerValidation(req.body);
+  const { error } = registerValidation(req.body); // send the body of post to validation function
   if (error) {
-    return res.status(400).send({ message: error["details"][0]["message"] });
+    return res.status(400).send({ message: error["details"][0]["message"] }); // send error
   }
-
-  const userExists = await User.findOne({ email: req.body.email });
-  if (userExists) {
+  const userExists = await User.findOne({ email: req.body.email }); // look for user
+  if (userExists) { // if user exists send error
     return res.status(400).send({ message: "User already exists" });
   }
-  const salt = await bcryptjs.genSalt(5);
+  const salt = await bcryptjs.genSalt(5); // generate salt
   const hashedPassword = await bcryptjs.hash(req.body.password, salt);
 
-  const user = new User({
+  const user = new User({ // create  new User
     username: req.body.username,
     email: req.body.email,
     password: hashedPassword,
   });
 
   try {
-    const savedUser = await user.save();
-
-    return res.send(savedUser);
+    const savedUser = await user.save(); // save user
+    return res.send(savedUser); // send user
   } catch (err) {
     return res.send({ message: err });
   }
 });
 
+/**
+ * @api {auth}/login - POST
+ * register a user
+ * (much of this register function is from lab lectures)
+ * @return user object as JSON
+**/
 router.post("/login", async (req, res) => {
-  const { error } = loginValidation(req.body);
+  const { error } = loginValidation(req.body); // validate login with login validation funciton
   if (error) {
-    return res.status(400).send({ message: error["details"][0]["message"] });
+    return res.status(400).send({ message: error["details"][0]["message"] }); // return if there is an error
   }
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email }); // find user
   if (!user) {
-    return res.status(400).send({ message: "User does not exists" });
+    return res.status(400).send({ message: "User does not exists" }); // error if user does not exist
   }
-
-  const passwordValidation = await bcryptjs.compare(
+// compare request password with user.password using bcrypt
+  const passwordValidation = await bcryptjs.compare( 
     req.body.password,
     user.password
   );
+  // if password invalud
   if (!passwordValidation) {
     return res.status(400).send({ message: "password is wrong" });
   }
-  const token = jsonwebtoken.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-  return res.header("auth-token", token).send({ "auth-token": token });
+  const token = jsonwebtoken.sign({ _id: user._id }, process.env.TOKEN_SECRET); // sign json webtoken
+  return res.header("auth-token", token).send({ "auth-token": token }); // send header with token and token
 });
 
 module.exports = router;
