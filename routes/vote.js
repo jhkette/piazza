@@ -1,11 +1,12 @@
 const express = require("express");
 const router = express.Router();
+
 const auth = require("../validations/verifyToken");
 const voteController = require("../controllers/vote")
 
 
 /**
- * @api vote/:postId/like 
+ * @api vote/:postId/like - POST
  * This route allows the user to like a post - this 'like 
  * is also stored on the post document
  * @param postId - the unique id of the post to be liked.

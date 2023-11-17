@@ -19,7 +19,7 @@ mongoose.connect(process.env.DB_CONNECTOR,  {useNewUrlParser: true, useUnifiedTo
 .catch((err) => { console.error(err); });
 
 app.use(bodyParser.json())
-app.use('/piazza/vote',votesPiazza)
+app.use('/piazza/vote', votesPiazza)
 app.use('/piazza/user',authPiazza)
 app.use('/piazza/posts', postPiazza)
 

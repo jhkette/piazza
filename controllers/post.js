@@ -10,7 +10,7 @@ exports.getTopic = async (req, res) => {
     } catch (err) {
       return res.status(400).send({ message: err });
     }
-  };
+};
 
 exports.getPost = async (req, res) => {
     try {
