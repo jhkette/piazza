@@ -1,6 +1,11 @@
 const joi = require('joi')
 const passwordComplexity = require("joi-password-complexity");
 
+/**
+ * Both these validation functions come from 
+ * lab lessons
+ * */
+
 const registerValidation = (data) => {
     const complexityOptions = {
         min: 6,

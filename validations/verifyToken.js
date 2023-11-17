@@ -11,8 +11,8 @@ function auth (req,res,next){
         req.user = verified;
 
         next() // call next as there is no return
-    }catch(err){
-        return res.status(401).send({message: 'Invalid token'})
+    }catch(err){ // 403 as they have token but no longer valid
+        return res.status(403).send({message: 'Invalid token'})
     }
 }
 

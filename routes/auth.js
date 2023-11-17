@@ -12,7 +12,7 @@ const jsonwebtoken = require("jsonwebtoken");
  lab sessions */
 
 /**
- * @api {auth}/register - POST
+ * @api auth/register - POST
  * register a user
  * (much of this register function is from lab lectures)
  * @return user object as JSON
@@ -45,7 +45,7 @@ router.post("/register", async (req, res) => {
 });
 
 /**
- * @api {auth}/login - POST
+ * @api auth/login - POST
  * register a user
  * (much of this register function is from lab lectures)
  * @return user object as JSON

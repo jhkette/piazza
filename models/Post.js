@@ -41,7 +41,6 @@ const postSchema = mongoose.Schema({
     immutable: true,
     default: () => moment(Date.now()).add(5, "m").toDate(),
   },
-
   postComments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }],
