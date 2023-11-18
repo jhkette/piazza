@@ -31,7 +31,7 @@ exports.addLike = async (req, res) => {
         $push: { likes: likeToSave._id },
       });
       // sends post, likeTosave
-      res.send({ post, likeToSave });
+      return res.send({ post, likeToSave });
     } catch (err) {
       return res.status(400).send({ message: err });
     }
@@ -63,7 +63,7 @@ exports.addDisLike = async (req, res) => {
       await post.updateOne({  // push new dislike to array in database
         $push: { dislikes: dislikeToSave._id },
       });
-      res.send({ post, dislikeToSave }); // send post and disliketosave
+      return res.send({ post, dislikeToSave }); // send post and disliketosave
     } catch (err) {
       return res.status(400).send({ message: err }); // send error if error thrown
     }

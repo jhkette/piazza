@@ -6,7 +6,7 @@ const voteController = require("../controllers/vote")
 
 
 /**
- * @api vote/:postId/like - POST
+ * @api votes/:postId/like - POST
  * This route allows the user to like a post - this 'like 
  * is also stored on the post document
  * @param postId - the unique id of the post to be liked.
@@ -15,11 +15,11 @@ const voteController = require("../controllers/vote")
 router.post("/:postId/like", auth, voteController.addLike );
 
 /**
- * @api vote/:postId/dislike -POST 
+ * @api votes/:postId/dislike -POST 
  * This route allows the user to dislike a post - this 'dislike 
- * is also stored on the post document
+ * is also stored on the post model document
  * @param postId - the unique id of the post to be disliked.
- * @return Post object and the dislike object as JSON
+ * @return Post object and the dislike object 
 **/
   router.post("/:postId/dislike", auth, voteController.addDisLike);
 

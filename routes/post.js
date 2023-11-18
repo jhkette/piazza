@@ -7,15 +7,15 @@ const postController = require("../controllers/post")
 
 
 /**
- * @api {post}/  - GET
+ * @api post/  - GET
  * get all posts
  * @return An array of Post objects in JSON
 **/
 router.get("/", auth, postController.getAllPosts);
 
 /**
- * @api {post/topic/:topic This route allows the user to view all topics a post - this 'dislike 
- * is also stored on the post document
+ * @api post/topic/:topic - GET
+ * This route sends all the posts that are associated with a topic
  * @param topic - the topic to be viewed
  * @return An array of Post objects in JSON
 **/
