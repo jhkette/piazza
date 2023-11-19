@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-// like model
+// refreshToken model
 const refreshTokenSchema = mongoose.Schema({
 
     refreshToken:{
         type: String,
-        require: true,
+        required: true,
         min: 10,
         max: 600,
     },
@@ -13,7 +13,7 @@ const refreshTokenSchema = mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        require: true
+        required: true
     }
 })
 

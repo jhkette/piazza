@@ -27,7 +27,7 @@ exports.getPost = async (req, res) => {
 };
 
 exports.addPost = async (req, res) => {
-  console.log(req);
+ 
   const postData = new Post({
     title: req.body.title,
     message: req.body.message,

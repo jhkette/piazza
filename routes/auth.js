@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const auth = require("../validations/verifyToken");
+const {auth} = require("../validations/verifyTokens");
 const authController = require("../controllers/auth")
 
 /* Much of the coding for the register and logins routes are adapted from

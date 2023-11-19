@@ -1,7 +1,6 @@
 const express = require("express");
-const Post = require("../models/Post");
 const router = express.Router();
-const auth = require("../validations/verifyToken");
+const {auth} = require("../validations/verifyTokens");
 const postController = require("../controllers/post")
 
 
@@ -33,8 +32,8 @@ router.get("/:postId", auth, postController.getPost);
 /**
  * @api post/ - POST
  * This route allows the user to save a post
- * @param postId - the unique id of the post to be disliked.
- * @return Post object and the dislike object as JSON
+ * 
+ * @return The saved Post object 
 **/
 router.post("/", auth, postController.addPost );
 

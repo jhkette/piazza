@@ -12,7 +12,7 @@ exports.addLike = async (req, res) => {
       if(post.isexpired){
         return res.json({message: "This post has expired"})
       }
-        // check if user has already liked post - it doesn't make sense to dislike something twice
+        // check if user has already liked post - it doesn't make sense to like something twice
       const alreadyLiked = post.likes.filter(
         (p) => p.userId.toString() === req.user._id // filter array for matching user id
       );

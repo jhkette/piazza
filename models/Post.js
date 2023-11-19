@@ -6,13 +6,13 @@ const Schema = mongoose.Schema;
 const postSchema = mongoose.Schema({
   title: {
     type: String,
-    require: true,
+    required: true,
     min: 3,
     max: 3000,
   },
   message: {
     type: String,
-    require: true,
+    required: true,
     min: 3,
     max: 4000,
   },
@@ -26,7 +26,7 @@ const postSchema = mongoose.Schema({
     {
       type: String,
       enum: ["sports", "tech", "politics", "health"],
-      immutable: true,
+
       min: 3,
       max: 25,
     },

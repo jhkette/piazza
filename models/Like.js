@@ -6,12 +6,12 @@ const likeSchema = mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        require: true
+        required: true
     },
     postId: {
         type: Schema.Types.ObjectId,
         ref: 'Post',
-        require: true
+        required: true
     },
 })
 
