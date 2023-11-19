@@ -1,14 +1,23 @@
 
+const jsonwebtoken = require('jsonwebtoken')
+const RefreshToken = require("../models/RefreshToken")
 
-// https://kettan007.medium.com/json-web-token-jwt-in-node-js-implementing-using-refresh-token-90e24e046cf8
 
-function generateAccessToken(payload, ip_address) {
-    return new Promise(function (resolve, reject) {
+const generateAccessToken = async (user_id) =>  {
+    
     var tokens = {};
     //generating acess token
-    tokens.accessToken = jwt.sign(payload, Constant.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
+    tokens.accessToken = jsonwebtoken.sign({id: user_id}, process.env.TOKEN_SECRET, { expiresIn: '1h' });
     //generating refresh token
-    tokens.refreshToken = jwt.sign(payload, Constant.ACCESS_TOKEN_SECRET, { expiresIn: '6h' });
-    resolve(tokens);
-    })
+    tokens.refreshToken = jsonwebtoken.sign({id: user_id}, process.env.AUTH_TOKEN_SECRET, { expiresIn: '72h' });
+     
+    const refreshToken = await RefreshToken.findOne({ userId: user_id });
+    if (refreshToken) {
+        await RefreshToken.findOneAndDelete({userId: user_id })
+    }
+   
+    await new RefreshToken({ userId: user_id, refreshToken: tokens.refreshToken }).save()
+    return Promise.resolve(tokens);
 };
+
+module.exports = generateAccessToken

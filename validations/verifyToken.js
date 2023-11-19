@@ -11,9 +11,11 @@ function auth (req,res,next){
         req.user = verified;
 
         next() // call next as there is no return
-    }catch(err){ // 403 as they have token but no longer valid
+    }catch(err){ // 403 status as they have token but no longer valid
         return res.status(403).send({message: 'Invalid token'})
     }
 }
+
+
 
 module.exports = auth

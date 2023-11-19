@@ -1,10 +1,11 @@
 const bcryptjs = require("bcryptjs");
+const jsonwebtoken = require("jsonwebtoken");
 const User = require("../models/User");
 const {
   registerValidation,
   loginValidation,
 } = require("../validations/validation");
-const jsonwebtoken = require("jsonwebtoken");
+const generateAccessToken = require("../validations/generateToken")
 
 exports.register = async (req, res) => {
   const { error } = registerValidation(req.body); // send the body of post to validation function
@@ -52,6 +53,9 @@ exports.login = async (req, res) => {
   if (!passwordValidation) {
     return res.status(400).send({ message: "password is wrong" });
   }
+  const tokens = await generateAccessToken(user._id)
   const token = jsonwebtoken.sign({ _id: user._id }, process.env.TOKEN_SECRET); // sign json webtoken
-  return res.header("auth-token", token).send({ "auth-token": token }); // send header with token and token
+  return res.header("auth-token", tokens.accessToken)
+  .header("refresh-token", tokens.refreshToken)
+  .send({ "auth-token": tokens.accessToken, "refresh-token": tokens.refreshToken }); // send header with token and token
 };
