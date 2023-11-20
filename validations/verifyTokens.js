@@ -1,5 +1,6 @@
 const jsonwebtoken = require("jsonwebtoken");
 const RefreshToken = require("../models/RefreshToken");
+const generateAccessToken  = require("./generateToken")
 
 
 function auth(req, res, next) {
@@ -17,26 +18,25 @@ function auth(req, res, next) {
     return res.status(403).send({ message: "Invalid token" });
   }
 }
-// https://dev.to/cyberwolves/jwt-authentication-with-access-tokens-refresh-tokens-in-node-js-5aa9
 
-const verifyRefreshToken = async (refreshToken) => {
+
+const verifyRefreshToken = async (refresh) => {
   const privateKey = process.env.REFRESH_TOKEN_SECRET;
-  return new Promise(async (resolve, reject) => {
-    await RefreshToken.findOne({ refreshToken: refreshToken });
-    if (!refreshToken) {
-      return reject({ error: true, message: "Invalid refresh token" });
-    }
-    jwt.verify(refreshToken, privateKey, (err, tokenDetails) => {
-      if (err) {
-        return reject({ error: true, message: "Invalid refresh token" });
-      }
-      resolve({
-        tokenDetails,
-        error: false,
-        message: "Valid refresh token",
-      });
-    });
-  });
-};
+  const refreshToken= await RefreshToken.findOne({ refreshToken: refresh });
+  if (!refreshToken) {
+     return {error: "access denied - invalid refresh token"}
+  }
+  try{
+    const authtoken =  jsonwebtoken.verify(refresh, privateKey)
+    const {id} = authtoken
+    const newToken = generateAccessToken(id)
+    return newToken
+  }
+  catch (error) {
+    return  { error: error };
+  }
+ 
+}
+
 
 module.exports = {auth, verifyRefreshToken};

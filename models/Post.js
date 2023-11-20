@@ -16,8 +16,8 @@ const postSchema = mongoose.Schema({
     min: 3,
     max: 4000,
   },
-
-  userId: {
+  // im only storing the userid as opposed to a username - as the userID allows us to populate username
+  userId: { 
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -26,7 +26,7 @@ const postSchema = mongoose.Schema({
     {
       type: String,
       enum: ["sports", "tech", "politics", "health"],
-
+      equired: true,
       min: 3,
       max: 25,
     },
@@ -62,5 +62,5 @@ postSchema.virtual("isexpired").get(function () {
     return false;
   }
 });
-
+postSchema.set('toJSON', { getters: true });
 module.exports = mongoose.model("Post", postSchema);

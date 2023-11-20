@@ -27,11 +27,12 @@ exports.getPost = async (req, res) => {
 };
 
 exports.addPost = async (req, res) => {
+  console.log(req.user)
  
   const postData = new Post({
     title: req.body.title,
     message: req.body.message,
-    userId: req.user._id,
+    userId: req.user.id,
     topic: req.body.topic,
   });
 
@@ -45,7 +46,8 @@ exports.addPost = async (req, res) => {
 
 exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
+    const posts = await Post.find().sort({ createdAt: -1 })
+   
     return res.send(posts);
   } catch (err) {
     return res.status(400).send({ message: err });

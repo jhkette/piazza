@@ -4,7 +4,7 @@ const Post = require("../models/Post");
 exports.postComment = async (req, res) => {
   // get post from params
   const post = await Post.findById(req.params.postId);
-  console.log(post.isexpired)
+
   if (post.isexpired) {
     //  if virtual post is expires is true you cannot comment
     return res.json({ msg: "This post has expired" });
@@ -12,7 +12,7 @@ exports.postComment = async (req, res) => {
   const commentData = new Comment({
     // create new comment
     text: req.body.text,
-    userId: req.user._id,
+    userId: req.user.id,
     postId: req.params.postId,
   });
   try {

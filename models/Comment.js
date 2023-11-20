@@ -5,7 +5,7 @@ const commentSchema = mongoose.Schema({
   
     text:{
         type: String,
-        require: true,
+        required: true,
         min: 3,
         max: 3000,
     },

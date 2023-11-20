@@ -4,6 +4,7 @@ const DisLike = require("../models/Dislike");
 
 exports.addLike = async (req, res) => {
     try {
+      console.log(req.user)
       // post findbyId - populate with likes
       const post = await Post.findById(req.params.postId).populate({
         path: "likes",
@@ -14,7 +15,7 @@ exports.addLike = async (req, res) => {
       }
         // check if user has already liked post - it doesn't make sense to like something twice
       const alreadyLiked = post.likes.filter(
-        (p) => p.userId.toString() === req.user._id // filter array for matching user id
+        (p) => p.userId.toString() === req.user.id // filter array for matching user id
       );
         //  if the filter array alreadydisLiked is more than one they must have liked post
       if (alreadyLiked.length >= 1) {
@@ -22,7 +23,7 @@ exports.addLike = async (req, res) => {
       }
       // create new like object
       const likeData = new Like({
-        userId: req.user._id,
+        userId: req.user.id,
         postId: req.params.postId,
       });
       // save like
@@ -49,14 +50,14 @@ exports.addDisLike = async (req, res) => {
       }
       // check if user has already disliked post - it doesn't make sense to dislike something twice
       const alreadydisLiked = post.dislikes.filter(
-        (p) => p.userId.toString() === req.user._id // filter array for matching user id
+        (p) => p.userId.toString() === req.user.id // filter array for matching user id
       );
       //  if the filter array alreadydisLiked is more than one they must have disliked post
       if (alreadydisLiked.length > 0) {
         return res.send({ message: "You have already disliked this Post" });
       }
       const dislikeData = new DisLike({ // create new dislike object
-        userId: req.user._id,
+        userId: req.user.id,
         postId: req.params.postId,
       });
       const dislikeToSave = await dislikeData.save(); // save dislke
