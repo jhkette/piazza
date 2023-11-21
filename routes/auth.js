@@ -3,8 +3,7 @@ const router = express.Router();
 const authController = require("../controllers/auth")
 const {auth} = require("../validations/verifyTokens");
 
-/* Much of the coding for the register and logins routes are adapted from
- lab sessions */
+
 
 /**
  * @api user/register - POST

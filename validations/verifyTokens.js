@@ -1,10 +1,9 @@
 const jsonwebtoken = require("jsonwebtoken");
 const RefreshToken = require("../models/RefreshToken");
-const generateAccessToken  = require("./generateToken")
-
+const generateAccessToken = require("./generateToken");
 
 function auth(req, res, next) {
-  const token = req.header("auth-token");
+  const token = req.header("authtoken");
   if (!token) {
     return res.status(401).send({ message: "Access denied" });
   }
@@ -19,24 +18,20 @@ function auth(req, res, next) {
   }
 }
 
-
 const verifyRefreshToken = async (refresh) => {
   const privateKey = process.env.REFRESH_TOKEN_SECRET;
-  const refreshToken= await RefreshToken.findOne({ refreshToken: refresh });
+  const refreshToken = await RefreshToken.findOne({ refreshToken: refresh });
   if (!refreshToken) {
-     return {error: "access denied - invalid refresh token"}
+    return { error: "access denied - invalid refresh token" };
   }
-  try{
-    const authtoken =  jsonwebtoken.verify(refresh, privateKey)
-    const {id} = authtoken
-    const newToken = generateAccessToken(id)
-    return newToken
+  try {
+    const authtoken = jsonwebtoken.verify(refresh, privateKey);
+    const { id } = authtoken;
+    const newToken = generateAccessToken(id);
+    return newToken;
+  } catch (error) {
+    return { error };
   }
-  catch (error) {
-    return  { error: error };
-  }
- 
-}
+};
 
-
-module.exports = {auth, verifyRefreshToken};
+module.exports = { auth, verifyRefreshToken };

@@ -2,11 +2,15 @@ const Post = require("../models/Post");
 const Like = require("../models/Like");
 const DisLike = require("../models/Dislike");
 
+/* These functions still run on the posts route
+I have simply split files to make it easier to read  */
+
+/* function that adds a like to a post on route below
+*  POST - piazza/posts/:postId/like */
 exports.addLike = async (req, res) => {
     try {
-      console.log(req.user)
       // post findbyId - populate with likes
-      const post = await Post.findById(req.params.postId).populate({
+      const post = await Post.findById(xss(req.params.postId)).populate({
         path: "likes",
       });
       // check if virtual 'isepxired' is truthy
@@ -24,7 +28,7 @@ exports.addLike = async (req, res) => {
       // create new like object
       const likeData = new Like({
         userId: req.user.id,
-        postId: req.params.postId,
+        postId: xss(req.params.postId),
       });
       // save like
       const likeToSave = await likeData.save();
@@ -37,11 +41,12 @@ exports.addLike = async (req, res) => {
       return res.status(400).send({ message: err });
     }
 }
-
+/* function that adds a dislike to a post on route below
+*  POST - piazza/votes/:postId/dislike */
 exports.addDisLike = async (req, res) => {
     try {
       // find the post and populate it with the existing dislikes
-      const post = await Post.findById(req.params.postId).populate({
+      const post = await Post.findById(xss(req.params.postId)).populate({
         path: "dislikes",
       });
       // check if virtual 'isepxired' is truthy
@@ -57,8 +62,8 @@ exports.addDisLike = async (req, res) => {
         return res.send({ message: "You have already disliked this Post" });
       }
       const dislikeData = new DisLike({ // create new dislike object
-        userId: req.user.id,
-        postId: req.params.postId,
+        userId: xss(req.user.id),
+        postId: xss(req.params.postId),
       });
       const dislikeToSave = await dislikeData.save(); // save dislke
       await post.updateOne({  // push new dislike to array in database

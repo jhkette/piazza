@@ -1,16 +1,19 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
+const cors = require("cors")
 const dotenv = require('dotenv').config()
+const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require("helmet");
 
 // import routes
 const authPiazza = require('./routes/auth')
 const postPiazza = require('./routes/post')
-const votesPiazza = require('./routes/vote')
-const commentsPiazza = require('./routes/comment')
+
 
 // initialise express
 const app = express()
+
 
 // call mongoose to connect to mongodb database
 mongoose.connect(process.env.DB_CONNECTOR,  {useNewUrlParser: true, useUnifiedTopology: true })
@@ -18,12 +21,21 @@ mongoose.connect(process.env.DB_CONNECTOR,  {useNewUrlParser: true, useUnifiedTo
 
 .catch((err) => { console.error(err); });
 
+// stop cross origin resource sharing error on browser
+app.use(cors())
+// middleware to parse JSON
 app.use(bodyParser.json())
-app.use('/piazza/votes', votesPiazza)
+// sanitise data
+app.use(mongoSanitize());
+
+// add more secure headers
+app.use(helmet())
+
+
+
 app.use('/piazza/user',authPiazza)
 app.use('/piazza/posts', postPiazza)
 
-app.use('/piazza/comments', commentsPiazza)
 
 // 404 error message for invalid urls
 app.use((req, res) => {

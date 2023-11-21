@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
-// dislike model
+//  Model for a dislike
 const dislikeSchema = mongoose.Schema({
    
     userId: {

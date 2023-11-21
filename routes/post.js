@@ -1,41 +1,68 @@
 const express = require("express");
 const router = express.Router();
 const {auth} = require("../validations/verifyTokens");
-const postController = require("../controllers/post")
-
+const postController = require("../controllers/post");
+const voteController = require("../controllers/postvote");
+const commentController = require("../controllers/postcomments")
 
 
 /**
- * @api post/  - GET
- * get all posts
+ * @api GET posts/   
+ * sends a collection of posts
  * @return An array of Post objects in JSON
 **/
 router.get("/", auth, postController.getAllPosts);
 
 /**
- * @api post/topic/:topic - GET
- * This route sends all the posts that are associated with a topic
+ * @api GET posts/topic/:topic  
+ * This route sends a collection of posts that are associated with a topic
  * @param topic - the topic to be viewed
- * @return An array of Post objects in JSON
+ * @return An array of Post objects assigned to topic
 **/
-router.get("/topic/:topic", auth, postController.getTopic);
+router.get("/:topic", auth, postController.getTopic);
 
 /**
- * @api post/:postId/dislike - GET 
- * This route allows the user to dislike a post - this 'dislike 
- * is also stored on the post document
+ * @api GET posts/:postId 
+ * This route allows the user to view a singleton post
  * @param postId - the unique id of the post to be disliked.
- * @return Post object and the dislike object as JSON
+ * @return the selected Post object  
 **/
 router.get("/:postId", auth, postController.getPost);
 
+
 /**
- * @api post/ - POST
+ * @api POST posts/comment/:postId 
+ * @param postid - the post with the commments
+ * @return An array of Comment objects
+**/
+router.post("comments/:postId", auth, commentController.postComment );
+
+
+/**
+ * @api POST posts/ 
  * This route allows the user to save a post
- * 
  * @return The saved Post object 
 **/
 router.post("/", auth, postController.addPost );
+
+
+/**
+ * @api posts/:postId/like - POST
+ * This route allows the user to like a post - this 'like 
+ * is also stored on the post document
+ * @param postId - the unique id of the post to be liked.
+ * @return Post object and the Like object as JSON
+**/
+router.post("/:postId/like", auth, voteController.addLike );
+
+/**
+ * @api posts/:postId/dislike -POST 
+ * This route allows the user to dislike a post - this 'dislike 
+ * is also stored on the post model document
+ * @param postId - the unique id of the post to be disliked.
+ * @return Post object and the dislike object 
+**/
+  router.post("/:postId/dislike", auth, voteController.addDisLike);
 
 
 

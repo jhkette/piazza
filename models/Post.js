@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const moment = require("moment");
 const Schema = mongoose.Schema;
 
-//  post models
+//  Model for a post
 const postSchema = mongoose.Schema({
   title: {
     type: String,
@@ -16,7 +16,7 @@ const postSchema = mongoose.Schema({
     min: 3,
     max: 4000,
   },
-  // im only storing the userid as opposed to a username - as the userID allows us to populate username
+  // im only storing the userid as opposed to a username - as the userID allows us to populate a username
   userId: { 
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -25,8 +25,8 @@ const postSchema = mongoose.Schema({
   topic: [
     {
       type: String,
-      enum: ["sports", "tech", "politics", "health"],
-      equired: true,
+      enum: ["sports", "tech", "politics", "health"], // using enum to ensure it is one of these things
+      required: true,
       min: 3,
       max: 25,
     },
@@ -45,15 +45,22 @@ const postSchema = mongoose.Schema({
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }],
 });
+// these are 'virtuals' - which are not storeed on mongodb
+// but are computed from db values. As they are useful values 
+// they are added to result from posts by the statement at bottom -
+// postSchema.set('toJSON', { getters: true });
 
-postSchema.virtual("votetotal").get(function () {
+// votescore is total positive votes
+postSchema.virtual("votescore").get(function () {
   return this.likes.length - this.dislikes.length;
 });
+// i've added a readable date
 postSchema.virtual("readabledate").get(function () {
   const time = moment(this.createdAt);
   return time.format("MMM D YYYY h:mm A");
 });
 
+// A check to see if the post is expired
 postSchema.virtual("isexpired").get(function () {
   const now = Date.now();
   if (now > this.expired) {

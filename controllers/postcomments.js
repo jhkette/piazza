@@ -1,9 +1,17 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
+const xss = require("xss");
 
+
+/* This functions still runs on the posts route
+I have simply split files to make it easier to read  */
+
+//this function posts a comment -
+// associated with a post
+// on route POST /posts/comments/:postId
 exports.postComment = async (req, res) => {
   // get post from params
-  const post = await Post.findById(req.params.postId);
+  const post = await Post.findById(xss(req.params.postId));
 
   if (post.isexpired) {
     //  if virtual post is expires is true you cannot comment
@@ -11,9 +19,9 @@ exports.postComment = async (req, res) => {
   }
   const commentData = new Comment({
     // create new comment
-    text: req.body.text,
+    text: xss(req.body.text),
     userId: req.user.id,
-    postId: req.params.postId,
+    postId: xss(req.params.postId),
   });
   try {
     const commentToSave = await commentData.save(); // save comment

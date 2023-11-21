@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
-// like model
+//  Model for a like
 const likeSchema = mongoose.Schema({
    
     userId: {
