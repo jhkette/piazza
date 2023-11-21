@@ -2,6 +2,12 @@ const jsonwebtoken = require("jsonwebtoken");
 const RefreshToken = require("../models/RefreshToken");
 const generateAccessToken = require("./generateToken");
 
+/**
+ * @function auth
+ * the function authorises a new user
+ * @params req, res,next
+ * @return void
+*/
 function auth(req, res, next) {
   const token = req.header("authtoken");
   if (!token) {
@@ -17,17 +23,22 @@ function auth(req, res, next) {
     return res.status(403).send({ message: "Invalid token" });
   }
 }
-
+/**
+ * @function verifyRefreshToken 
+ * the function generates new tokens
+ * @param String refresh - the refesh token string
+ * @return token - a new JWT token
+*/
 const verifyRefreshToken = async (refresh) => {
   const privateKey = process.env.REFRESH_TOKEN_SECRET;
-  const refreshToken = await RefreshToken.findOne({ refreshToken: refresh });
-  if (!refreshToken) {
+  const refreshToken = await RefreshToken.findOne({ refreshToken: refresh }); // find related refeshtoken in db
+  if (!refreshToken) { // return error if not there
     return { error: "access denied - invalid refresh token" };
   }
   try {
-    const authtoken = jsonwebtoken.verify(refresh, privateKey);
-    const { id } = authtoken;
-    const newToken = generateAccessToken(id);
+    const authtoken = jsonwebtoken.verify(refresh, privateKey); // verify refresh token
+    const { id } = authtoken; // destructure id
+    const newToken = generateAccessToken(id); // get new token
     return newToken;
   } catch (error) {
     return { error };
