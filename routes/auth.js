@@ -31,6 +31,6 @@ router.post("/refresh", auth, authController.refreshToken);
 
 
 
-router.get("/logout", auth, authController.logout);
+router.delete("/logout", auth, authController.logout);
 
 module.exports = router;

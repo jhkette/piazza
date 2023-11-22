@@ -10,7 +10,7 @@ const RefreshToken = require("../models/RefreshToken")
 const generateAccessToken = async (user_id) =>  {
     var tokens = {};
     //generating acess token
-    tokens.accessToken = jsonwebtoken.sign({id: user_id}, process.env.TOKEN_SECRET, { expiresIn: '72h' });
+    tokens.accessToken = jsonwebtoken.sign({id: user_id}, process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRE });
     //generating refresh token
     tokens.refreshToken = jsonwebtoken.sign({id: user_id}, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '240h' });
      

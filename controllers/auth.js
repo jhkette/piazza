@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
 
   try { // try catch block in case there are errors with saving user
     const savedUser = await user.save(); // save user
-    return res.send(savedUser); // send user
+    return res.status(201).send(savedUser); // send user
   } catch (err) {
     return res.send({ message: err });
   }
@@ -68,10 +68,13 @@ exports.login = async (req, res) => {
     .send({
       "authtoken": tokens.accessToken,
       "refreshtoken": tokens.refreshToken,
+      "expires":  process.env.TOKEN_EXPIRE
     }); // send header with token and token
 };
 
-// function that refreshes token in refresh route
+/* function that refreshes token in refresh route 
+* @return refreshed tokens 
+*/
 exports.refreshToken = async (req, res, next) => {
   try{
   const tokenToRefresh = req.header("refreshtoken"); // get refresh token from header

@@ -46,7 +46,7 @@ exports.addPost = async (req, res) => {
 
   try {
     const postToSave = await postData.save(); // save post to mongodb
-    res.send(postToSave);
+    res.status(201).send(postToSave);
   } catch (err) {
     return res.status(400).send({ message: err });
   }

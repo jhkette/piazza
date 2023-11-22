@@ -19,7 +19,7 @@ router.get("/", auth, postController.getAllPosts);
  * @param topic - the topic to be viewed
  * @return An array of Post objects assigned to topic
 **/
-router.get("/:topic", auth, postController.getTopic);
+router.get("topic/:topic", auth, postController.getTopic);
 
 /**
  * @api GET posts/:postId 
