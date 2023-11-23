@@ -7,7 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require("helmet");
 
 // import routes
-const authPiazza = require('./routes/auth')
+const authPiazza = require('./routes/user')
 const postPiazza = require('./routes/post')
 
 

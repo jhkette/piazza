@@ -35,7 +35,7 @@ router.get("/:postId", auth, postController.getPost);
  * @param postid - the post with the commments
  * @return An array of Comment objects
 **/
-router.post("comments/:postId", auth, commentController.postComment );
+router.post("/:postId/comment", auth, commentController.postComment );
 
 
 /**

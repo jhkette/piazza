@@ -27,7 +27,7 @@ exports.postComment = async (req, res) => {
     const commentToSave = await commentData.save(); // save comment
     //  we also need to update the post object with comment
     await post.updateOne({ $push: { postComments: commentToSave._id } });
-    return res.send(commentToSave); // send comment
+    return res.status(201).send(commentToSave); // send comment
   } catch (err) {
     return res.status(400).send({ message: err }); // if error send error
   }

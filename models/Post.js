@@ -36,7 +36,7 @@ const postSchema = mongoose.Schema({
     immutable: true,
     default: () => Date.now(),
   },
-  expired: {
+  expireAt: {
     type: Date,
     immutable: true,
     default: () => moment(Date.now()).add(5, "m").toDate(),
@@ -61,7 +61,7 @@ postSchema.virtual("readabledate").get(function () {
 });
 
 // A check to see if the post is expired
-postSchema.virtual("isexpired").get(function () {
+postSchema.virtual("expireStatus").get(function () {
   const now = Date.now();
   if (now > this.expired) {
     return true;

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/auth")
+const authController = require("../controllers/user")
 const {auth} = require("../validations/verifyTokens");
 
 
@@ -21,13 +21,13 @@ router.post("/register", authController.register );
 router.post("/login", authController.login );
 
 /**
- * @api user/refresh - POST
+ * @api user/refresh - GET
  * refreshes a JSON webtoken
  * for reauthorisation. needs to be authorised user
  * to refresh token
  * @return user object as JSON
 **/
-router.post("/refresh", auth, authController.refreshToken);
+router.get("/refresh", auth, authController.refreshToken);
 
 
 

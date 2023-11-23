@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const Like = require("../models/Like");
 const DisLike = require("../models/Dislike");
+const xss = require("xss");
 
 /* These functions still run on the posts route
 I have simply split files to make it easier to read  */
@@ -9,10 +10,13 @@ I have simply split files to make it easier to read  */
 *  POST - piazza/posts/:postId/like */
 exports.addLike = async (req, res) => {
     try {
+      const postParams = xss(req.params.postId)
+      
       // post findbyId - populate with likes
-      const post = await Post.findById(xss(req.params.postId)).populate({
+      const post = await Post.findById(postParams).populate({
         path: "likes",
       });
+      
       // check if virtual 'isepxired' is truthy
       if(post.isexpired){
         return res.json({message: "This post has expired"})
@@ -28,7 +32,7 @@ exports.addLike = async (req, res) => {
       // create new like object
       const likeData = new Like({
         userId: req.user.id,
-        postId: xss(req.params.postId),
+        postId: postParams,
       });
       // save like
       const likeToSave = await likeData.save();
@@ -36,40 +40,46 @@ exports.addLike = async (req, res) => {
         $push: { likes: likeToSave._id },
       });
       // sends post, likeTosave
-      return res.send({ post, likeToSave });
+      return res.status(201).send({ post, likeToSave });
     } catch (err) {
       return res.status(400).send({ message: err });
     }
 }
 /* function that adds a dislike to a post on route below
-*  POST - piazza/votes/:postId/dislike */
+*  POST - piazza/:postId/dislike */
 exports.addDisLike = async (req, res) => {
-    try {
-      // find the post and populate it with the existing dislikes
-      const post = await Post.findById(xss(req.params.postId)).populate({
-        path: "dislikes",
-      });
-      // check if virtual 'isepxired' is truthy
-      if(post.isexpired){
-        return res.json({message: "This post has expired"}) // send message if true
-      }
-      // check if user has already disliked post - it doesn't make sense to dislike something twice
-      const alreadydisLiked = post.dislikes.filter(
-        (p) => p.userId.toString() === req.user.id // filter array for matching user id
-      );
-      //  if the filter array alreadydisLiked is more than one they must have disliked post
-      if (alreadydisLiked.length > 0) {
-        return res.send({ message: "You have already disliked this Post" });
-      }
-      const dislikeData = new DisLike({ // create new dislike object
-        userId: xss(req.user.id),
-        postId: xss(req.params.postId),
-      });
-      const dislikeToSave = await dislikeData.save(); // save dislke
-      await post.updateOne({  // push new dislike to array in database
-        $push: { dislikes: dislikeToSave._id },
-      });
-      return res.send({ post, dislikeToSave }); // send post and disliketosave
+  try {
+    const postParams = xss(req.params.postId)
+    
+    // post findbyId - populate with likes
+    const post = await Post.findById(postParams).populate({
+      path: "dislikes",
+    });
+    
+    // check if virtual 'isepxired' is truthy
+    if(post.isexpired){
+      return res.json({message: "This post has expired"})
+    }
+      // check if user has already liked post - it doesn't make sense to like something twice
+    const alreadyDisLiked = post.dislikes.filter(
+      (p) => p.userId.toString() === req.user.id // filter array for matching user id
+    );
+      //  if the filter array alreadydisLiked is more than one they must have liked post
+    if (alreadyDisLiked.length >= 1) {
+      return res.send({ message: "You have already disliked this Post" });
+    }
+    // create new like object
+    const dislikeData = new DisLike({
+      userId: req.user.id,
+      postId: postParams,
+    });
+    // save like
+    const dislikeToSave = await dislikeData.save();
+    await post.updateOne({
+      $push: { dislikes: dislikeToSave._id },
+    });
+    // sends post, likeTosave
+    return res.status(201).send({ post, dislike: dislikeToSave });
     } catch (err) {
       return res.status(400).send({ message: err }); // send error if error thrown
     }

@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
   const userExists = await User.findOne({ email: xss(req.body.email) }); // look for user
   if (userExists) {
     // if user exists send error
-    return res.status(400).send({ message: "User already exists" });
+    return res.status(401).send({ message: "User already exists" });
   }
   const salt = await bcryptjs.genSalt(5); // generate salt
   const hashedPassword = await bcryptjs.hash(xss(req.body.password), salt); // hash password
@@ -50,7 +50,7 @@ exports.login = async (req, res) => {
   }
   const user = await User.findOne({ email: xss(req.body.email) }); // find user
   if (!user) {
-    return res.status(401).send({ message: "User does not exists" }); // error if user does not exist
+    return res.status(401).send({ message: "User does not exist" }); // error if user does not exist
   }
   // compare request password with user.password using bcrypt
   const passwordValidation = await bcryptjs.compare(
@@ -59,7 +59,7 @@ exports.login = async (req, res) => {
   );
   // if password invalud
   if (!passwordValidation) {
-    return res.status(400).send({ message: "password is wrong" });
+    return res.status(401).send({ message: "password is wrong" });
   }
   const tokens = await generateAccessToken(user._id);
   return res
