@@ -1,6 +1,7 @@
 const Post = require("../models/Post");
 const Like = require("../models/Like");
 const DisLike = require("../models/Dislike");
+const User = require("../models/User")
 const xss = require("xss");
 
 /* These functions still run on the posts route
@@ -18,7 +19,7 @@ exports.addLike = async (req, res) => {
       });
       
       // check if virtual 'isepxired' is truthy
-      if(post.isexpired){
+      if(post.expireStatus){
         return res.json({message: "This post has expired"})
       }
         // check if user has already liked post - it doesn't make sense to like something twice
@@ -39,8 +40,10 @@ exports.addLike = async (req, res) => {
       await post.updateOne({
         $push: { likes: likeToSave._id },
       });
+      const user = await User.findById(xss(req.user.id)); // get user
+      const timeLeft = `${Math.floor((post.expireAt - Date.now())/1000)} seconds left`;
       // sends post, likeTosave
-      return res.status(201).send({ post, likeToSave });
+      return res.status(201).send({ post, likeToSave, user: user.username, timeLeft });
     } catch (err) {
       return res.status(400).send({ message: err });
     }
@@ -57,7 +60,7 @@ exports.addDisLike = async (req, res) => {
     });
     
     // check if virtual 'isepxired' is truthy
-    if(post.isexpired){
+    if(post.expireStatus){
       return res.json({message: "This post has expired"})
     }
       // check if user has already liked post - it doesn't make sense to like something twice
@@ -78,8 +81,10 @@ exports.addDisLike = async (req, res) => {
     await post.updateOne({
       $push: { dislikes: dislikeToSave._id },
     });
-    // sends post, likeTosave
-    return res.status(201).send({ post, dislike: dislikeToSave });
+    const timeLeft = `${Math.floor((post.expireAt - Date.now())/1000)} seconds left`;
+    const user = await User.findById(xss(req.user.id)); // get user
+    // sends post, likeTosave, username
+    return res.status(201).send({ post, dislike: dislikeToSave, username: user.username, timeLeft });
     } catch (err) {
       return res.status(400).send({ message: err }); // send error if error thrown
     }

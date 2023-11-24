@@ -63,7 +63,7 @@ postSchema.virtual("readabledate").get(function () {
 // A check to see if the post is expired
 postSchema.virtual("expireStatus").get(function () {
   const now = Date.now();
-  if (now > this.expired) {
+  if (now > this.expireAt) {
     return true;
   } else {
     return false;

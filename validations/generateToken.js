@@ -12,7 +12,7 @@ const generateAccessToken = async (user_id) =>  {
     //generating acess token
     tokens.accessToken = jsonwebtoken.sign({id: user_id}, process.env.TOKEN_SECRET, { expiresIn: process.env.TOKEN_EXPIRE });
     //generating refresh token
-    tokens.refreshToken = jsonwebtoken.sign({id: user_id}, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '240h' });
+    tokens.refreshToken = jsonwebtoken.sign({id: user_id}, process.env.REFRESH_TOKEN_SECRET, { expiresIn:  process.env.REFRESH_TOKEN_EXPIRE });
      
     const refreshToken = await RefreshToken.findOne({ userId: user_id });
     if (refreshToken) {

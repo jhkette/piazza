@@ -1,5 +1,6 @@
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
+const User = require("../models/User")
 const xss = require("xss");
 
 
@@ -13,7 +14,7 @@ exports.postComment = async (req, res) => {
   // get post from params
   const post = await Post.findById(xss(req.params.postId));
 
-  if (post.isexpired) {
+  if (post.expireStatus) {
     //  if virtual post is expires is true you cannot comment
     return res.json({ msg: "This post has expired" });
   }
@@ -27,7 +28,10 @@ exports.postComment = async (req, res) => {
     const commentToSave = await commentData.save(); // save comment
     //  we also need to update the post object with comment
     await post.updateOne({ $push: { postComments: commentToSave._id } });
-    return res.status(201).send(commentToSave); // send comment
+    
+    const user = await User.findById(xss(req.user.id)); // get user
+    const timeLeft = `${Math.floor((post.expireAt - Date.now())/1000)} seconds left`;
+    return res.status(201).send({comment:commentToSave, post, user: user.username, timeLeft}); // send comment
   } catch (err) {
     return res.status(400).send({ message: err }); // if error send error
   }

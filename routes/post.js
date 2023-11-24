@@ -5,7 +5,7 @@ const postController = require("../controllers/post");
 const voteController = require("../controllers/postvote");
 const commentController = require("../controllers/postcomments")
 
-
+router.get("/expired", auth, postController.getExpiredPosts );
 /**
  * @api GET posts/   
  * sends a collection of posts
@@ -43,7 +43,7 @@ router.post("/:postId/comment", auth, commentController.postComment );
  * This route allows the user to save a post
  * @return The saved Post object 
 **/
-router.post("/", auth, postController.addPost );
+
 
 
 /**
@@ -63,6 +63,11 @@ router.post("/:postId/like", auth, voteController.addLike );
  * @return Post object and the dislike object 
 **/
   router.post("/:postId/dislike", auth, voteController.addDisLike);
+  
+
+
+  router.post("/", auth, postController.addPost );
+
 
 
 

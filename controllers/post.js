@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const User = require("../models/User");
 
 const xss = require("xss");
 
@@ -43,10 +44,12 @@ exports.addPost = async (req, res) => {
     userId: xss(req.user.id),
     topic: xss(req.body.topic),
   });
-
+  
+  
   try {
     const postToSave = await postData.save(); // save post to mongodb
-    res.status(201).send(postToSave);
+    const user = await User.findById(xss(req.user.id));
+    res.status(201).send({postToSave, username: user.username});
   } catch (err) {
     return res.status(400).send({ message: err });
   }
@@ -63,5 +66,17 @@ exports.getAllPosts = async (req, res) => {
     return res.status(400).send({ message: err });
   }
 };
+
+exports.getExpiredPosts = async (req,res) => {
+  try {
+  const posts = await Post.find();
+  const expired = posts.filter((post) => post.expireStatus == true)
+ 
+  return res.send(expired); // send posts
+  } catch (err) {
+  return res.status(400).send({ message: err });
+}
+
+}
 
 

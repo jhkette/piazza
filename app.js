@@ -25,7 +25,7 @@ mongoose.connect(process.env.DB_CONNECTOR,  {useNewUrlParser: true, useUnifiedTo
 app.use(cors())
 // middleware to parse JSON
 app.use(bodyParser.json())
-// sanitise data
+// sanitise data to protect against injection
 app.use(mongoSanitize());
 
 // add more secure headers
