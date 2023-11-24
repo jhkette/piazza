@@ -49,7 +49,7 @@ exports.addLike = async (req, res) => {
     }
 }
 /* function that adds a dislike to a post on route below
-*  POST - piazza/:postId/dislike */
+*  POST - piazza/posts/:postId/dislike */
 exports.addDisLike = async (req, res) => {
   try {
     const postParams = xss(req.params.postId)

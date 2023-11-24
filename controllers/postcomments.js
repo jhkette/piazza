@@ -3,13 +3,15 @@ const Post = require("../models/Post");
 const User = require("../models/User")
 const xss = require("xss");
 
-
-/* This functions still runs on the posts route
+/**
+This functions still runs on the posts route
 I have simply split files to make it easier to read  */
 
-//this function posts a comment -
-// associated with a post
-// on route POST /posts/comments/:postId
+/*** 
+* this function posts a comment -
+* associated with a post
+* POST /posts/:postId/comment 
+*/
 exports.postComment = async (req, res) => {
   // get post from params
   const post = await Post.findById(xss(req.params.postId));
