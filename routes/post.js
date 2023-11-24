@@ -7,10 +7,6 @@ const commentController = require("../controllers/postcomments")
 
 
 
-
-// router.get("/expiredposts", auth,  );
-
-
 /**
  * @api GET posts/topic/:topic  
  * This route sends a collection of posts that are associated with a topic
@@ -74,7 +70,7 @@ router.post("/", auth, postController.addPost );
   
   /**
  * @api GET posts/   
- * sends a collection of posts
+ * sends a collection of all posts
  * @return An array of Post objects in JSON
 **/
 router.get("/", auth, postController.getAllPosts);

@@ -9,7 +9,6 @@ const commentSchema = mongoose.Schema({
         min: 3,
         max: 3000,
     },
-
     userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',

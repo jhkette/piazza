@@ -12,9 +12,6 @@ exports.getTopic = async (req, res) => {
     const sortedposts = posts.sort((a, b) => {
       return b.votescore - a.votescore;
     });
-
-    // console.log(sortable);
-
     return res.send(sortedposts); // send posts
   } catch (err) {
     return res.status(400).send({ message: err });
@@ -48,13 +45,13 @@ exports.addPost = async (req, res) => {
   const postData = new Post({
     title: xss(req.body.title),
     message: xss(req.body.message),
-    userId: xss(req.user.id),
+    userId: req.user.id,
     topic: xss(req.body.topic),
   });
 
   try {
     const postToSave = await postData.save(); // save post to mongodb
-    const user = await User.findById(xss(req.user.id));
+    const user = await User.findById(req.user.id);
     res.status(201).send({ postToSave, username: user.username });
   } catch (err) {
     return res.status(400).send({ message: err });
@@ -77,7 +74,7 @@ exports.getExpiredPosts = async (req, res) => {
   try {
     const topic = xss(req.params.topic); // get params
     const posts = await Post.find({ topic: topic }); // find posts with topic
-    const expired = posts.filter((post) => post.expireStatus == true); // filter out 'live' posts
+    const expired = posts.filter((post) => post.expireStatus == "expired"); // filter out 'live' posts
 
     return res.send(expired); // send posts
   } catch (err) {

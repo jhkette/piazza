@@ -45,11 +45,9 @@ const postSchema = mongoose.Schema({
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }],
 })
-
 // these are 'virtuals' - which are not storeed on mongodb
 // but are computed from db values. As they are useful values 
 // they are added to result from posts by the statement at bottom -
-// postSchema.set('toJSON', { getters: true });
 
 // votescore is total positive votes
 postSchema.virtual("votescore").get(function () {
@@ -65,9 +63,9 @@ postSchema.virtual("readabledate").get(function () {
 postSchema.virtual("expireStatus").get(function () {
   const now = Date.now();
   if (now > this.expireAt) {
-    return true;
+    return "expired";
   } else {
-    return false;
+    return "live";
   }
 });
 postSchema.set('toJSON', { getters: true });
