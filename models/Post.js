@@ -22,15 +22,12 @@ const postSchema = mongoose.Schema({
     ref: "User",
     required: true,
   },
-  topic: [
-    {
-      type: String,
-      enum: ["sports", "tech", "politics", "health"], // using enum to ensure it is one of these things
+  topic: {
+      type: [String],
       required: true,
-      min: 3,
-      max: 25,
+  
     },
-  ],
+  
   createdAt: {
     type: Date,
     immutable: true,
@@ -45,11 +42,12 @@ const postSchema = mongoose.Schema({
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }],
 })
+postSchema.set('toJSON', { virtuals: true }); //LEAVE!!!
 // these are 'virtuals' - which are not storeed on mongodb
 // but are computed from db values. As they are useful values 
 // they are added to result from posts by the statement at bottom -
 
-// votescore is total positive votes
+// votescore is total positive votes 
 postSchema.virtual("votescore").get(function () {
   return this.likes.length - this.dislikes.length;
 });
@@ -68,5 +66,5 @@ postSchema.virtual("expireStatus").get(function () {
     return "live";
   }
 });
-postSchema.set('toJSON', { getters: true });
+
 module.exports = mongoose.model("Post", postSchema);

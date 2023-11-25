@@ -1,12 +1,13 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
+const topicValidation = require("../validations/topicValidation")
 const xss = require("xss");
 
 /* function that gets an array of post related to topic on route below
  *  GET- piazza/posts/:topic */
 exports.getTopic = async (req, res) => {
   try {
-    const topic = xss(req.params.topic); // get para,s
+    const topic = xss(req.params.topic); // get params
     const posts = await Post.find({ topic: topic }); // find posts with topic
     // sort posts by votescore
     const sortedposts = posts.sort((a, b) => {
@@ -41,14 +42,18 @@ exports.getPost = async (req, res) => {
 /* function that adds post on add post route
  *  POST - piazza/posts/ */
 exports.addPost = async (req, res) => {
+
+  const finalTopic = topicValidation(req.body.topic);
+  if (finalTopic.error){
+    return res.status(400).send(finalTopic.error);
+  } 
   // create new post
   const postData = new Post({
     title: xss(req.body.title),
     message: xss(req.body.message),
     userId: req.user.id,
-    topic: xss(req.body.topic),
+    topic: finalTopic,
   });
-
   try {
     const postToSave = await postData.save(); // save post to mongodb
     const user = await User.findById(req.user.id);
@@ -63,13 +68,15 @@ exports.addPost = async (req, res) => {
 exports.getAllPosts = async (req, res) => {
   try {
     const posts = await Post.find().sort({ createdAt: -1 }); // find all posts and srt by most recent
-
     return res.send(posts); // send posts
   } catch (err) {
     return res.status(400).send({ message: err });
   }
 };
 
+
+/* function that returns expiredposts on topic
+ *  GET - piazza/posts/:topic/expired */
 exports.getExpiredPosts = async (req, res) => {
   try {
     const topic = xss(req.params.topic); // get params

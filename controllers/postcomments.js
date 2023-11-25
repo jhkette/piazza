@@ -15,8 +15,9 @@ I have simply split files to make it easier to read  */
 exports.postComment = async (req, res) => {
   // get post from params
   const post = await Post.findById(xss(req.params.postId));
+ 
 
-  if (post.expireStatus) {
+  if (post.expireStatus =="expired") {
     //  if virtual post is expires is true you cannot comment
     return res.json({ msg: "This post has expired" });
   }

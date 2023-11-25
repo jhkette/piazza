@@ -19,7 +19,7 @@ exports.addLike = async (req, res) => {
       });
       
       // check if virtual 'isepxired' is truthy
-      if(post.expireStatus){
+      if(post.expireStatus == "expired"){
         return res.json({message: "This post has expired"})
       }
         // check if user has already liked post - it doesn't make sense to like something twice
@@ -60,7 +60,7 @@ exports.addDisLike = async (req, res) => {
     });
     
     // check if virtual 'isepxired' is truthy
-    if(post.expireStatus){
+    if(post.expireStatus == "expired"){
       return res.json({message: "This post has expired"})
     }
       // check if user has already liked post - it doesn't make sense to like something twice
