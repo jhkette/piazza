@@ -1,14 +1,14 @@
 const Post = require("../models/Post");
 const User = require("../models/User");
 const topicValidation = require("../validations/topicValidation")
-const xss = require("xss");
+
 
 /* function that gets an array of post related to topic on route below
  *  GET- piazza/posts/:topic */
 exports.getTopic = async (req, res) => {
   try {
-    const topic = xss(req.params.topic); // get params
-    const posts = await Post.find({ topic: topic }); // find posts with topic
+    
+    const posts = await Post.find({ topic: req.params.topic }); // find posts with topic
     // sort posts by votescore
     const sortedposts = posts.sort((a, b) => {
       return b.votescore - a.votescore;
@@ -24,7 +24,7 @@ exports.getTopic = async (req, res) => {
 exports.getPost = async (req, res) => {
   try {
     // wrapping finding post and populating fields in try catch to handle errors
-    const post = await Post.findById(xss(req.params.postId))
+    const post = await Post.findById(req.params.postId)
       //https://mongoosejs.com/docs/populate.html  - populate other related collections
       // so they can be sent alongside post info
       .populate({ path: "postComments" })
@@ -49,8 +49,8 @@ exports.addPost = async (req, res) => {
   } 
   // create new post
   const postData = new Post({
-    title: xss(req.body.title),
-    message: xss(req.body.message),
+    title: req.body.title,
+    message: req.body.message,
     userId: req.user.id,
     topic: finalTopic,
   });
@@ -79,8 +79,7 @@ exports.getAllPosts = async (req, res) => {
  *  GET - piazza/posts/:topic/expired */
 exports.getExpiredPosts = async (req, res) => {
   try {
-    const topic = xss(req.params.topic); // get params
-    const posts = await Post.find({ topic: topic }); // find posts with topic
+    const posts = await Post.find({ topic: req.params.topic }); // find posts with topic
     const expired = posts.filter((post) => post.expireStatus == "expired"); // filter out 'live' posts
 
     return res.send(expired); // send posts

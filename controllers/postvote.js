@@ -2,7 +2,7 @@ const Post = require("../models/Post");
 const Like = require("../models/Like");
 const DisLike = require("../models/Dislike");
 const User = require("../models/User")
-const xss = require("xss");
+
 
 /* These functions still run on the posts route
 I have simply split files to make it easier to read  */
@@ -11,10 +11,9 @@ I have simply split files to make it easier to read  */
 *  POST - piazza/posts/:postId/like */
 exports.addLike = async (req, res) => {
     try {
-      const postParams = xss(req.params.postId)
       
       // post findbyId - populate with likes
-      const post = await Post.findById(postParams).populate({
+      const post = await Post.findById(req.params.postId).populate({
         path: "likes",
       });
       
@@ -40,7 +39,7 @@ exports.addLike = async (req, res) => {
       await post.updateOne({
         $push: { likes: likeToSave._id },
       });
-      const user = await User.findById(xss(req.user.id)); // get user
+      const user = await User.findById(req.user.id); // get user
       const timeLeft = `${Math.floor((post.expireAt - Date.now())/1000)} seconds left`;
       // sends post, likeTosave
       return res.status(201).send({ post, likeToSave, user: user.username, timeLeft });
@@ -52,10 +51,9 @@ exports.addLike = async (req, res) => {
 *  POST - piazza/posts/:postId/dislike */
 exports.addDisLike = async (req, res) => {
   try {
-    const postParams = xss(req.params.postId)
     
     // post findbyId - populate with likes
-    const post = await Post.findById(postParams).populate({
+    const post = await Post.findById(req.params.postId).populate({
       path: "dislikes",
     });
     
@@ -82,7 +80,7 @@ exports.addDisLike = async (req, res) => {
       $push: { dislikes: dislikeToSave._id },
     });
     const timeLeft = `${Math.floor((post.expireAt - Date.now())/1000)} seconds left`;
-    const user = await User.findById(xss(req.user.id)); // get user
+    const user = await User.findById(req.user.id); // get user
     // sends post, likeTosave, username
     return res.status(201).send({ post, dislike: dislikeToSave, username: user.username, timeLeft });
     } catch (err) {

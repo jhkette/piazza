@@ -1,4 +1,4 @@
-const xss = require("xss");
+
 
 /**
  * Function topicvalidation
@@ -9,7 +9,7 @@ const xss = require("xss");
 const topicValidation = (topic) => {
   const validOptions = ["politics", "health", "sport", "tech"];
   if (typeof topic === "string") {
-    const finalTopic = xss(topic);
+    const finalTopic = topic;
 
     const validTest = validOptions.includes(finalTopic.toLowerCase());
     if (validTest == false) {

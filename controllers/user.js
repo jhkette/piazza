@@ -7,7 +7,7 @@ const {
 const RefreshToken = require("../models/RefreshToken")
 const generateAccessToken = require("../validations/generateToken");
 const { verifyRefreshToken } = require("../validations/verifyTokens");
-const xss = require("xss");
+
 
 /* Much of the coding for the register and login routes are adapted from
  lab sessions */
@@ -19,17 +19,17 @@ exports.register = async (req, res) => {
   if (error) {
     return res.status(400).send({ message: error["details"][0]["message"] }); // send error
   }
-  const userExists = await User.findOne({ email: xss(req.body.email) }); // look for user
+  const userExists = await User.findOne({ email: req.body.email }); // look for user
   if (userExists) {
     // if user exists send error
     return res.status(401).send({ message: "User already exists" });
   }
   const salt = await bcryptjs.genSalt(5); // generate salt
-  const hashedPassword = await bcryptjs.hash(xss(req.body.password), salt); // hash password
+  const hashedPassword = await bcryptjs.hash(req.body.password, salt); // hash password
   // create  new User
   const user = new User({
-    username: xss(req.body.username),
-    email: xss(req.body.email),
+    username: req.body.username,
+    email: req.body.email,
     password: hashedPassword,
   });
 
@@ -48,13 +48,13 @@ exports.login = async (req, res) => {
   if (error) {
     return res.status(401).send({ message: error["details"][0]["message"] }); // return if there is an error
   }
-  const user = await User.findOne({ email: xss(req.body.email) }); // find user
+  const user = await User.findOne({ email: req.body.email }); // find user
   if (!user) {
     return res.status(401).send({ message: "User does not exist" }); // error if user does not exist
   }
   // compare request password with user.password using bcrypt
   const passwordValidation = await bcryptjs.compare(
-    xss(req.body.password),
+      req.body.password,
     user.password
   );
   // if password invalud
