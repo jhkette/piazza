@@ -19,7 +19,7 @@ exports.postComment = async (req, res) => {
 
   if (post.expireStatus =="expired") {
     //  if virtual post is expires is true you cannot comment
-    return res.json({ msg: "This post has expired" });
+    return res.json({ message: "This post has expired" });
   }
   const commentData = new Comment({
     // create new comment

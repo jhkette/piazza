@@ -42,7 +42,7 @@ const postSchema = mongoose.Schema({
   likes: [{ type: Schema.Types.ObjectId, ref: "Like" }],
   dislikes: [{ type: Schema.Types.ObjectId, ref: "DisLike" }],
 })
-postSchema.set('toJSON', { virtuals: true }); //LEAVE!!!
+postSchema.set('toJSON', { virtuals: true }); //#LEAVE!!!
 // these are 'virtuals' - which are not storeed on mongodb
 // but are computed from db values. As they are useful values 
 // they are added to result from posts by the statement at bottom -

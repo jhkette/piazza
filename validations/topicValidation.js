@@ -1,6 +1,11 @@
 const xss = require("xss");
 
-
+/**
+ * Function topicvalidation
+ * takes a topic and ensures it is a valid topic
+ * @param topic 
+ * @returns Array [topic]
+ */
 const topicValidation = (topic) => {
   const validOptions = ["politics", "health", "sport", "tech"];
   if (typeof topic === "string") {
