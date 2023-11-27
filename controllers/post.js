@@ -45,7 +45,7 @@ exports.addPost = async (req, res) => {
 
   const finalTopic = topicValidation(req.body.topic);
   if (finalTopic.error){
-    return res.status(400).send(finalTopic.error);
+    return res.status(400).send({error: finalTopic.error});
   } 
   // create new post
   const postData = new Post({

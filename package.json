@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "mocha"
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -24,12 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
     "mongoose": "^7.6.3",
-    "nodemon": "^3.0.1",
-    "xss": "^1.0.14"
-  },
-  "devDependencies": {
-    "chai": "^4.3.10",
-    "mocha": "^10.2.0",
-    "supertest": "^6.3.3"
+    "nodemon": "^3.0.1"
   }
+  
 }

@@ -18,7 +18,7 @@ const topicValidation = (topic) => {
       return [finalTopic.toLowerCase()];
     }
   }
-  const lowerTopic = topic.map((word) => xss(word.toLowerCase()));
+  const lowerTopic = topic.map((word) => word.toLowerCase());
   const validarray = lowerTopic.filter((item) =>
     validOptions.includes(item.toLowerCase())
   );

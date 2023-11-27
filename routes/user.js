@@ -30,7 +30,11 @@ router.post("/login", authController.login );
 router.get("/refresh", auth, authController.refreshToken);
 
 
-
+/**
+ * @api user/logout - delete
+ * delete refresh token
+ * @return {message}
+**/
 router.delete("/logout", auth, authController.logout);
 
 module.exports = router;
